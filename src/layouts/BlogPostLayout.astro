@@ -1,0 +1,133 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  pubDate: string;
+  updatedDate?: string;
+  author?: string;
+  category?: string;
+  tags?: string[];
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  author = '2027机场榜评测室',
+  category = '机场评测',
+  tags = ['2027机场榜', '机场推荐', '科学上网', '翻墙梯子'],
+  canonicalUrl = Astro.url.href
+} = Astro.props;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  'headline': title,
+  'description': description,
+  'datePublished': pubDate,
+  'dateModified': updatedDate || pubDate,
+  'author': {
+    '@type': 'Person',
+    'name': author,
+    'url': 'https://jichangbang2027.blog'
+  },
+  'publisher': {
+    '@type': 'Organization',
+    'name': '2027机场榜',
+    'logo': {
+      '@type': 'ImageObject',
+      'url': 'https://jichangbang2027.blog/favicon.svg'
+    }
+  },
+  'mainEntityOfPage': {
+    '@type': 'WebPage',
+    '@id': canonicalUrl
+  },
+  'articleSection': category,
+  'keywords': tags.join(', ')
+};
+
+const breadcrumbs = [
+  { name: '首页', url: '/' },
+  { name: '评测博客', url: '/posts' },
+  { name: title, url: canonicalUrl }
+];
+---
+
+<BaseLayout
+  title={`${title} - 2027机场榜`}
+  description={description}
+  keywords={tags}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
+  publishedTime={pubDate}
+  modifiedTime={updatedDate || pubDate}
+  articleSection={category}
+  schema={articleSchema}
+>
+  <div class="container" style="padding-top: 2rem;">
+    <Breadcrumb items={breadcrumbs} />
+
+    <article class="content-wrapper">
+      <header style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; align-items: center;">
+          <span class="brand-badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+            {category}
+          </span>
+          {tags.slice(0, 3).map((tag) => (
+            <span class="seo-tag">{tag}</span>
+          ))}
+        </div>
+
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-heading); line-height: 1.3; margin-bottom: 1rem;">
+          {title}
+        </h1>
+
+        <div style="display: flex; gap: 1.5rem; color: var(--text-muted); font-size: 0.88rem; flex-wrap: wrap;">
+          <span>✍️ 作者：{author}</span>
+          <span>📅 发布时间：{pubDate}</span>
+          {updatedDate && <span>🔄 最后更新：{updatedDate}</span>}
+          <span>⏱️ 阅读建议：5-8分钟</span>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <slot />
+      </div>
+
+      <!-- Cross-Navigation Action Box -->
+      <div style="margin-top: 2.5rem; background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <div style="font-size: 1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.25rem;">
+            💡 在实际配置或使用机场时遇到具体报错？
+          </div>
+          <div style="font-size: 0.86rem; color: var(--text-muted);">
+            查阅我们的 45 篇硬核 FAQ 独立解决方案（涵盖 ChatGPT 1020、超时全红、Cursor 代理与软路由指南）。
+          </div>
+        </div>
+        <a href="/faq" class="btn-secondary" style="padding: 0.5rem 1.1rem; font-size: 0.85rem; white-space: nowrap;">
+          浏览 45 篇技术排错百科 ➔
+        </a>
+      </div>
+
+      <footer style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          标签：{tags.map((t) => <span style="margin-right: 0.5rem; color: #2563eb; font-weight: 500;">#{t}</span>)}
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="/posts" class="btn-secondary" style="font-size: 0.85rem; padding: 0.45rem 1rem;">
+            ⬅️ 返回评测专栏
+          </a>
+          <a href="/ranking" class="btn-primary" style="font-size: 0.85rem; padding: 0.45rem 1rem;">
+            查看【2027机场榜】35家完整榜单 ➔
+          </a>
+        </div>
+      </footer>
+    </article>
+  </div>
+</BaseLayout>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import AirportCard from '../../components/AirportCard.astro';
+import { AIRPORT_LIST } from '../../data/airports';
+
+const breadcrumbs = [
+  { name: '首页', url: '/' },
+  { name: '35家机场详细评测与套餐目录', url: '/reviews' }
+];
+---
+
+<BaseLayout
+  title="2027机场榜全品牌详细评测与完整价格配套目录 - 35家官网直达"
+  description="汇总2027机场榜全部35家科学上网机场的独立详细评测报告：完整各档流量套餐价目表、独家8折/7折优惠码、IPLC/IEPL专线测试与官方安全注册直达。"
+  keywords={['2027机场评测大全', '机场优惠码汇总', '机场流量套餐价格表', '隐形人评测', '暮光加速套餐']}
+  canonicalUrl="https://jichangbang2027.blog/reviews"
+>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumb items={breadcrumbs} />
+
+    <header style="margin-bottom: 2.5rem; text-align: center;">
+      <div class="hero-pill">📋 35 份独立深度评测档案 · 完整价目表与优惠码汇总</div>
+      <h1 class="hero-title" style="font-size: 2.3rem;">
+        2027机场榜：全品牌评测报告与套餐配套中心
+      </h1>
+      <p class="hero-desc" style="max-width: 780px;">
+        点击任意品牌下方【查看完整套餐与评测】，即可查看该服务商从年付学生特惠包、月付主力到永不过期按量买断包的全部详细资费与专属优惠码。
+      </p>
+    </header>
+
+    <div class="airport-grid">
+      {AIRPORT_LIST.map((airport) => (
+        <AirportCard airport={airport} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

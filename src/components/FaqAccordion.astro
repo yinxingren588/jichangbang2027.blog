@@ -1,0 +1,51 @@
+---
+import type { FaqItem } from '../data/faqs';
+
+export interface Props {
+  faqs: FaqItem[];
+}
+
+const { faqs } = Astro.props;
+---
+
+<div class="faq-list">
+  {faqs.map((faq, index) => (
+    <details class="faq-item" open={index === 0}>
+      <summary class="faq-question">
+        <span>❓ {faq.question}</span>
+        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </summary>
+      <div class="faq-answer">
+        <p>{faq.answer}</p>
+        {faq.id && (
+          <div style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px dashed #e2e8f0; display: flex; justify-content: flex-end;">
+            <a href={`/faq/${faq.id}`} style="color: #2563eb; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
+              <span>📖 阅读该问题的完整独立解决方案与排错长文</span>
+              <span>➔</span>
+            </a>
+          </div>
+        )}
+      </div>
+    </details>
+  ))}
+</div>
+
+<style>
+  details[open] summary .chevron {
+    transform: rotate(180deg);
+  }
+  summary {
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .chevron {
+    transition: transform 0.2s ease;
+    color: var(--text-muted);
+  }
+</style>

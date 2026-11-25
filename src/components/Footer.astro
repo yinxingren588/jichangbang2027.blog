@@ -1,0 +1,73 @@
+---
+import { SEO_METRICS } from '../data/airports';
+import { FAQS_DATA } from '../data/faqs';
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4 style="font-size: 1.15rem; color: var(--text-heading); margin-bottom: 0.75rem;">2027机场榜 - jichangbang2027.blog</h4>
+        <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem;">
+          2027机场榜致力于为全球华人用户提供客观、真实、专业的科学上网梯子与节点评测。我们全天候监测各主流机场在晚高峰时期的丢包、延迟与带宽表现，并维护 {FAQS_DATA.length} 篇独立技术排错百科。
+        </p>
+        <div class="keywords-cloud">
+          {SEO_METRICS.keywordsList.slice(0, 6).map((kw) => (
+            <span class="seo-tag">{kw}</span>
+          ))}
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>快速导航</h4>
+        <ul>
+          <li><a href="/">2027机场榜首页</a></li>
+          <li><a href="/ranking">2027年度机场排行榜 (35家)</a></li>
+          <li><a href="/reviews">全品牌套餐价格与优惠码中心</a></li>
+          <li><a href="/clients">全平台 Clash 客户端安全下载</a></li>
+          <li><a href="/guide">新手选购与避坑指南</a></li>
+          <li><a href="/faq">技术问答百科 ({FAQS_DATA.length}篇)</a></li>
+          <li><a href="/posts">机场评测博客专栏</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>热门专栏与高频排错</h4>
+        <ul>
+          <li><a href="/posts/2027-chatgpt-claude-residential-ip-airport">ChatGPT/Claude住宅IP防封推荐</a></li>
+          <li><a href="/posts/2027-iplc-dedicated-line-airport-review">IPLC/IEPL高端专线深度评测</a></li>
+          <li><a href="/posts/2027-cheap-high-speed-airport-guide">平价高性价比大流量机场合集</a></li>
+          <li><a href="/posts/2027-clash-sing-box-client-tutorial">Clash & Sing-box 客户端教程</a></li>
+          <li><a href="/faq/clash-verge-timeout-all-red">节点全部超时全红 10 秒排错</a></li>
+          <li><a href="/faq/iplc-vs-iepl-difference">IPLC 与 IEPL 物理专线区别</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>站点信息与服务</h4>
+        <ul>
+          <li><a href="/sitemap">网站地图 (HTML 索引)</a></li>
+          <li><a href="/sitemap.xml" target="_blank" rel="noopener">XML 地图 (sitemap.xml)</a></li>
+          <li><a href="/sitemap-index.xml" target="_blank" rel="noopener">XML 索引 (sitemap-index.xml)</a></li>
+          <li><a href="/rss.xml" target="_blank">RSS 动态订阅</a></li>
+          <li><a href="/robots.txt" target="_blank">Robots.txt 协议</a></li>
+          <li><span style="color: #059669; font-size: 0.82rem; font-weight: 600;">✓ Bingbot / IndexNow 优化就绪</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>
+        <p>© 2027 <a href="https://jichangbang2027.blog" style="color: #2563eb; font-weight: 700;">2027机场榜 (jichangbang2027.blog)</a> 保留所有权利。</p>
+        <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">
+          免责声明：本站所有评测与测评数据仅供网络技术交流与学术科研测试参考，请严格遵守您所在地区的法律法规。
+        </p>
+      </div>
+      <div>
+        <span style="color: #0284c7; font-size: 0.88rem; font-weight: 600;">
+          权威实测・无惧高峰・持续更新
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>

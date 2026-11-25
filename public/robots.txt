@@ -1,0 +1,27 @@
+# robots.txt for https://jichangbang2027.blog
+# Optimized for Bingbot, Googlebot, Baiduspider and other mainstream search engines
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+# Bingbot Specific Settings
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: msnbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Sitemap Locations
+Sitemap: https://jichangbang2027.blog/sitemap.xml
+Sitemap: https://jichangbang2027.blog/sitemap-index.xml
+Sitemap: https://jichangbang2027.blog/sitemap-0.xml

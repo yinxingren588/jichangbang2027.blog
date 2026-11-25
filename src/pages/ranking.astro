@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RankingTable from '../components/RankingTable.astro';
+import AirportCard from '../components/AirportCard.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { AIRPORT_LIST } from '../data/airports';
+
+const breadcrumbs = [
+  { name: '首页', url: '/' },
+  { name: '2027机场排行榜完整榜单', url: '/ranking' }
+];
+
+const rankingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  'name': '2027机场排行榜 - 完整实测数据对比',
+  'description': '包含2027年全部35家顶级科学上网机场的综合得分、专线类型、流媒体支持及价格横向评测',
+  'itemListElement': AIRPORT_LIST.map((item, index) => ({
+    '@type': 'ListItem',
+    'position': index + 1,
+    'name': item.name,
+    'url': `https://jichangbang2027.blog/ranking#airport-${item.id}`
+  }))
+};
+---
+
+<BaseLayout
+  title="2027机场排行榜完整版 - 2027机场榜综合实力排名与横向对比"
+  description="2027机场排行榜全景展示：包含隐形人、暮光加速、微风网络、飞猫云、大佬云等35款最新梯子节点的晚高峰测速、IEPL专线质量、ChatGPT与流媒体解锁表现，帮助您快速筛选最适合的翻墙服务。"
+  keywords={['2027机场排行榜', '2027机场榜', '2027年机场排名', '翻墙梯子排行', '科学上网推荐']}
+  canonicalUrl="https://jichangbang2027.blog/ranking"
+  schema={rankingSchema}
+>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumb items={breadcrumbs} />
+
+    <header style="margin-bottom: 2.5rem; text-align: center;">
+      <div class="hero-pill">📊 权威数据对比 · 共收录 {AIRPORT_LIST.length} 款精选机场</div>
+      <h1 class="hero-title" style="font-size: 2.4rem;">
+        2027机场排行榜：全网主流科学上网机场综合横向评测
+      </h1>
+      <p class="hero-desc" style="max-width: 800px;">
+        本榜单由 <strong>【2027机场榜】</strong> 团队基于长期自动化网络探针数据综合编制。从骨干网络架构、晚高峰丢包抗压、流媒体全绿解锁到服务商运营底蕴进行全面量化打分。点击下方标签或输入关键词可即时精准筛选！
+      </p>
+
+      <!-- Live Search + Interactive Category Filter Tabs -->
+      <div style="max-width: 720px; margin: 1.5rem auto 1.25rem;">
+        <input
+          type="text"
+          id="ranking-search-input"
+          placeholder="🔍 快速检索品牌名、专线或特性（例如：隐形人、IEPL、双ISP、ChatGPT、12元）..."
+          style="width: 100%; padding: 0.8rem 1.25rem; font-size: 0.95rem; border: 1px solid #cbd5e1; border-radius: var(--radius-md); outline: none; background: #ffffff; color: #0f172a; box-shadow: 0 2px 6px rgba(0,0,0,0.03);"
+        />
+      </div>
+
+      <div class="filter-tabs" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+        <button class="filter-btn active" data-filter="all">🌟 全部收录 ({AIRPORT_LIST.length})</button>
+        <button class="filter-btn" data-filter="专线旗舰">👑 专线旗舰 ({AIRPORT_LIST.filter(a => a.categoryTag === '专线旗舰').length})</button>
+        <button class="filter-btn" data-filter="高性价比">💰 高性价比 ({AIRPORT_LIST.filter(a => a.categoryTag === '高性价比').length})</button>
+        <button class="filter-btn" data-filter="AI原生住宅">🤖 AI原生住宅 ({AIRPORT_LIST.filter(a => a.categoryTag === 'AI原生住宅').length})</button>
+        <button class="filter-btn" data-filter="低延迟电竞">🎮 低延迟电竞 ({AIRPORT_LIST.filter(a => a.categoryTag === '低延迟电竞').length})</button>
+        <button class="filter-btn" data-filter="平价轻量">⚡ 平价轻量 ({AIRPORT_LIST.filter(a => a.categoryTag === '平价轻量').length})</button>
+      </div>
+
+      <div id="ranking-match-count" style="margin-top: 0.85rem; font-size: 0.85rem; font-weight: 600; color: #2563eb;">
+        当前共展示全部 {AIRPORT_LIST.length} 款实测机场
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title" style="margin-bottom: 1rem;">
+        <span>📋</span>
+        <span>综合核心参数横向一览表 ({AIRPORT_LIST.length} 款全收录)</span>
+      </h2>
+      <RankingTable />
+    </section>
+
+    <div id="ranking-empty-state" style="display: none; text-align: center; padding: 3rem 1rem; margin: 2rem 0; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: var(--radius-md);">
+      <p style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">未找到匹配的机场品牌或特性</p>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">请尝试更换搜索词（如：IEPL、暮光、飞猫云、ChatGPT），或点击重置全部筛选。</p>
+      <button type="button" id="reset-ranking-filters" class="btn-secondary" style="padding: 0.45rem 1.1rem; font-size: 0.85rem;">
+        🔄 显示全部 {AIRPORT_LIST.length} 家机场
+      </button>
+    </div>
+
+    <section style="margin-top: 3.5rem;">
+      <h2 class="section-title" style="margin-bottom: 1.5rem;">
+        <span>🔍</span>
+        <span>各机场深度亮点与优缺点剖析卡片</span>
+      </h2>
+      <div class="airport-grid" id="all-cards-grid">
+        {AIRPORT_LIST.map((airport) => (
+          <AirportCard airport={airport} />
+        ))}
+      </div>
+    </section>
+
+    <article class="content-wrapper" style="margin-top: 3rem;">
+      <h2 style="font-size: 1.6rem; color: var(--text-heading); margin-top: 0;">2027机场榜评分维度详细说明</h2>
+      <div class="article-content">
+        <p>为确保公正与客观，【2027机场榜】的综合评分体系基于以下5大指标：</p>
+        <ol>
+          <li><strong>晚高峰速率与延迟（35%）</strong>：在晚间20:00至23:00的高峰拥堵时段进行持续10轮压测，考察带宽保底表现与突发跑速。</li>
+          <li><strong>物理线路纯度（25%）</strong>：严格辨别是否为正规端到端IEPL/IPLC内网专线，杜绝劣质公网直连冒充专线行为（<a href="/faq/how-to-identify-real-iplc-dedicated-line">如何自测鉴别真假专线？</a>）。</li>
+          <li><strong>IP原生纯净度（15%）</strong>：检测节点是否具备住宅双ISP属性，是否能原生解锁Netflix各区、Disney+、TikTok及顺利通过OpenAI ChatGPT安全网关（<a href="/faq/chatgpt-claude-access-denied-solution">查看AI防封详解</a>）。</li>
+          <li><strong>性价比与套餐弹性（15%）</strong>：评估每GB流量实际购买成本，以及是否支持单月购买、不限时按量计费等便民政策。</li>
+          <li><strong>运营稳定性与口碑（10%）</strong>：考察服务商成立时间、技术人员工单响应时效及在各大技术社区的用户声誉。</li>
+        </ol>
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .filter-btn {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.5rem 1.05rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+  }
+  .filter-btn:hover {
+    color: #2563eb;
+    border-color: #93c5fd;
+    background: #eff6ff;
+  }
+  .filter-btn.active {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+</style>
+
+<script>
+  function setupFilters() {
+    const buttons = document.querySelectorAll('.filter-btn');
+    const searchInput = document.getElementById('ranking-search-input') as HTMLInputElement | null;
+    const cards = document.querySelectorAll('.airport-card');
+    const rows = document.querySelectorAll('.ranking-table tbody tr');
+    const countLabel = document.getElementById('ranking-match-count');
+    const emptyState = document.getElementById('ranking-empty-state');
+    const resetBtn = document.getElementById('reset-ranking-filters');
+
+    let currentCategory = 'all';
+    let currentQuery = '';
+
+    // Support ?q= query string search (for SearchAction & direct links)
+    const params = new URLSearchParams(window.location.search);
+    const qParam = params.get('q');
+    if (qParam && searchInput) {
+      searchInput.value = qParam;
+      currentQuery = qParam.trim().toLowerCase();
+    }
+
+    function applyFilters() {
+      let visibleCards = 0;
+
+      cards.forEach((card) => {
+        const el = card as HTMLElement;
+        const cardCat = el.getAttribute('data-category') || '';
+        const text = (el.textContent || '').toLowerCase();
+        const matchCat = currentCategory === 'all' || cardCat === currentCategory;
+        const matchQuery = !currentQuery || text.includes(currentQuery);
+
+        if (matchCat && matchQuery) {
+          el.style.display = 'flex';
+          visibleCards++;
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      rows.forEach((row) => {
+        const el = row as HTMLElement;
+        const rowCat = el.getAttribute('data-category') || '';
+        const text = (el.textContent || '').toLowerCase();
+        const matchCat = currentCategory === 'all' || rowCat === currentCategory;
+        const matchQuery = !currentQuery || text.includes(currentQuery);
+
+        el.style.display = (matchCat && matchQuery) ? '' : 'none';
+      });
+
+      if (countLabel) {
+        countLabel.textContent = `当前筛选匹配：${visibleCards} 款实测机场`;
+      }
+      if (emptyState) {
+        emptyState.style.display = visibleCards === 0 ? 'block' : 'none';
+      }
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        buttons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.getAttribute('data-filter') || 'all';
+        applyFilters();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        currentQuery = (e.target as HTMLInputElement).value.trim().toLowerCase();
+        applyFilters();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        currentQuery = '';
+        currentCategory = 'all';
+        buttons.forEach((b) => b.classList.remove('active'));
+        if (buttons.length > 0) buttons[0].classList.add('active');
+        applyFilters();
+      });
+    }
+
+    applyFilters();
+  }
+
+  setupFilters();
+</script>

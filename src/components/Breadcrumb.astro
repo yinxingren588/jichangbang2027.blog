@@ -1,0 +1,42 @@
+---
+export interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+export interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': items.map((item, index) => ({
+    '@type': 'ListItem',
+    'position': index + 1,
+    'name': item.name,
+    'item': item.url.startsWith('http') ? item.url : `https://jichangbang2027.blog${item.url}`
+  }))
+};
+---
+
+<nav aria-label="面包屑导航" style="margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+  <ol style="display: flex; list-style: none; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+    {items.map((item, index) => (
+      <li style="display: flex; align-items: center; gap: 0.5rem;">
+        {index < items.length - 1 ? (
+          <>
+            <a href={item.url} style="color: var(--text-muted);">{item.name}</a>
+            <span style="color: #94a3b8;">/</span>
+          </>
+        ) : (
+          <span style="color: #2563eb; font-weight: 600;" aria-current="page">{item.name}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

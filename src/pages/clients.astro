@@ -1,0 +1,169 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+const breadcrumbs = [
+  { name: '首页', url: '/' },
+  { name: '客户端下载中心', url: '/clients' }
+];
+
+const clients = [
+  {
+    icon: '🪟',
+    name: 'Clash Verge Rev',
+    platform: 'Windows',
+    badge: '强烈推荐',
+    desc: '目前 Windows 平台最主流、更新最频繁的现代 Clash 客户端，内置最新 Mihomo 内核，支持原生 TUN 虚拟网卡模式与全中文直观界面。',
+    downloadUrl: 'https://github.com/clash-verge-rev/clash-verge-rev/releases',
+    tutorialUrl: '/posts/2027-clash-sing-box-client-tutorial',
+  },
+  {
+    icon: '🎉',
+    name: 'Mihomo Party / FlClash',
+    platform: 'Windows / macOS',
+    badge: '高颜值现代',
+    desc: '颜值极高的跨平台代理客户端，拥有现代化 UI 设计、内置丰富规则路由集与极轻量化内存开销。',
+    downloadUrl: 'https://github.com/mihomo-party-org/mihomo-party/releases',
+    tutorialUrl: '/faq/clash-for-windows-discontinued-migration-guide',
+  },
+  {
+    icon: '🍏',
+    name: 'Clash Verge Rev (macOS)',
+    platform: 'macOS (M系列/Intel)',
+    badge: '强烈推荐',
+    desc: '完美原生适配 Apple Silicon (M1/M2/M3/M4 选 aarch64.dmg) 与 Intel 架构 (选 x64.dmg)，原生支持 macOS 系统代理与 TUN 终端加速。',
+    downloadUrl: 'https://github.com/clash-verge-rev/clash-verge-rev/releases',
+    tutorialUrl: '/faq/macbook-clash-verge-brew-curl-terminal-proxy',
+  },
+  {
+    icon: '🤖',
+    name: 'Clash Meta for Android (CMFA)',
+    platform: 'Android',
+    badge: '强烈推荐',
+    desc: '安卓端生态最完善的开源代理工具，支持分应用代理、分流规则配置及全协议适配，后台运行低功耗极省电。',
+    downloadUrl: 'https://github.com/MetaCubeX/ClashMetaForAndroid/releases',
+    tutorialUrl: '/faq/android-clash-meta-background-killed-fix',
+  },
+  {
+    icon: '🚀',
+    name: 'Shadowrocket (小火箭)',
+    platform: 'iOS / iPadOS / tvOS',
+    badge: '强烈推荐',
+    desc: 'iOS 平台最经典的科学上网神器（美区 App Store 买断售价 $2.99，Apple TV 端通用免费下载），支持一键扫码或链接订阅导入。',
+    downloadUrl: 'https://apps.apple.com/us/app/shadowrocket/id932747118',
+    tutorialUrl: '/faq/ios-shadowrocket-apple-id-download-guide',
+  },
+  {
+    icon: '📦',
+    name: 'Sing-box (SFA / SFI)',
+    platform: 'Linux / 全平台极客',
+    badge: '极客低功耗',
+    desc: '新一代超轻量级全能代理内核客户端，资源占用极低，支持 Hysteria 2 / TUIC / VLESS-Reality 全部现代前沿协议。',
+    downloadUrl: 'https://github.com/SagerNet/sing-box/releases',
+    tutorialUrl: '/faq/sing-box-vs-clash-mihomo-comparison',
+  },
+];
+---
+
+<BaseLayout
+  title="2027全平台 Clash / 代理客户端官方开源安全下载中心 - 2027机场榜"
+  description="安全第一！2027机场榜为您提供 Windows、macOS、Android、iOS 全平台 Clash Verge Rev、Mihomo Party、Shadowrocket、Sing-box 官方正版开源下载导航与安装避坑教程。"
+  keywords={['Clash Verge Rev下载', 'Shadowrocket小火箭下载', 'Sing-box下载', 'Clash Meta安卓版下载', '2027翻墙软件下载']}
+  canonicalUrl="https://jichangbang2027.blog/clients"
+>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumb items={breadcrumbs} />
+
+    <header style="margin-bottom: 2.5rem; text-align: center;">
+      <div class="hero-pill">📱 官方开源 Releases · 拒绝第三方修改版与木马后门</div>
+      <h1 class="hero-title" style="font-size: 2.35rem;">
+        2027 全平台 Clash / 代理客户端官方下载中心
+      </h1>
+      <p class="hero-desc" style="max-width: 800px;">
+        本站严格只指引 GitHub 开源仓库官方 Releases 及 App Store 正规上架页面。强烈提醒：<strong>原版 Clash for Windows (CFW) 已停止维护且存在安全隐患</strong>，请统一升级至下方现代客户端。
+      </p>
+    </header>
+
+    <!-- Client Cards Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+      {clients.map((c) => (
+        <div class="airport-card" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span style="font-size: 1.65rem;">{c.icon}</span>
+              <div>
+                <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-heading); margin: 0;">{c.name}</h2>
+                <span style="font-size: 0.76rem; color: #0284c7; font-weight: 600;">适用平台：{c.platform}</span>
+              </div>
+            </div>
+            <span class="brand-badge" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+              {c.badge}
+            </span>
+          </div>
+
+          <p style="font-size: 0.88rem; color: #475569; line-height: 1.6; margin-bottom: 1.25rem; flex: 1;">
+            {c.desc}
+          </p>
+
+          <div style="display: flex; gap: 0.6rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <a href={c.downloadUrl} target="_blank" rel="noopener noreferrer" class="btn-primary" style="flex: 1; padding: 0.5rem 0.75rem; font-size: 0.84rem; justify-content: center;">
+              📥 官方下载安装包
+            </a>
+            <a href={c.tutorialUrl} class="btn-secondary" style="padding: 0.5rem 0.85rem; font-size: 0.84rem;">
+              📖 配置避坑教程
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Platform Pitfalls Guide -->
+    <section class="content-wrapper" style="margin-top: 0;">
+      <h2 style="font-size: 1.65rem; font-weight: 700; color: var(--text-heading); margin-top: 0; margin-bottom: 1.5rem;">
+        🛠️ 各平台客户端安装与常见报错避坑指南
+      </h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h3 style="font-size: 1.05rem; margin-top: 0; color: var(--text-heading);">🪟 Windows 平台避坑</h3>
+          <ul style="font-size: 0.86rem; color: #334155; padding-left: 1.2rem; margin: 0; line-height: 1.65;">
+            <li><strong>推荐版本</strong>：下载以 <code>x64-setup.exe</code> 结尾的安装包。</li>
+            <li><strong>SmartScreen 拦截</strong>：若弹出“Windows 已保护你的电脑”，点【更多信息】➔【仍要运行】。</li>
+            <li><strong>TUN 虚拟网卡</strong>：玩 Steam/Apex 或用终端代理需在设置安装 Service Mode 并开启 TUN 模式（<a href="/faq/clash-tun-mode-game-acceleration">查看详细教程</a>）。</li>
+          </ul>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h3 style="font-size: 1.05rem; margin-top: 0; color: var(--text-heading);">🍏 macOS 平台避坑</h3>
+          <ul style="font-size: 0.86rem; color: #334155; padding-left: 1.2rem; margin: 0; line-height: 1.65;">
+            <li><strong>芯片架构</strong>：M1/M2/M3/M4 请选 <code>aarch64.dmg</code>；Intel 老款 Mac 请选 <code>x64.dmg</code>。</li>
+            <li><strong>“文件已损坏”修复</strong>：打开终端运行：<code>sudo xattr -r -d com.apple.quarantine /Applications/Clash\ Verge.app</code></li>
+            <li><strong>终端不走代理</strong>：详见 <a href="/faq/macbook-clash-verge-brew-curl-terminal-proxy">Mac Terminal/git/brew 代理教程</a>。</li>
+          </ul>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h3 style="font-size: 1.05rem; margin-top: 0; color: var(--text-heading);">🤖 Android 安卓平台避坑</h3>
+          <ul style="font-size: 0.86rem; color: #334155; padding-left: 1.2rem; margin: 0; line-height: 1.65;">
+            <li><strong>防锁屏杀后台</strong>：小米/华为/OPPO/vivo 务必进入应用设置将电池策略设为“无限制”并在最近任务锁屏卡片。</li>
+            <li>详见 <a href="/faq/android-clash-meta-background-killed-fix">安卓杀后台保活精确路径指南</a>。</li>
+          </ul>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h3 style="font-size: 1.05rem; margin-top: 0; color: var(--text-heading);">🚀 iOS / Apple TV 避坑</h3>
+          <ul style="font-size: 0.86rem; color: #334155; padding-left: 1.2rem; margin: 0; line-height: 1.65;">
+            <li><strong>最高防锁机警告</strong>：外区 Apple ID <strong>只能在蓝色 App Store 登录</strong>！切勿登进手机设置顶部的 iCloud！</li>
+            <li>详见 <a href="/faq/ios-shadowrocket-apple-id-download-guide">小火箭安全下载防锁机指南</a>。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; text-align: center;">
+        <a href="/ranking" class="btn-primary" style="padding: 0.7rem 1.85rem;">
+          还没有订阅节点？立即前往 2027 机场排行榜选购 🚀
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

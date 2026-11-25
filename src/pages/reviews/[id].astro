@@ -1,0 +1,296 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { AIRPORT_LIST } from '../../data/airports';
+
+export async function getStaticPaths() {
+  return AIRPORT_LIST.map((airport) => ({
+    params: { id: airport.id },
+    props: { airport },
+  }));
+}
+
+const { airport } = Astro.props;
+const canonicalUrl = `https://jichangbang2027.blog/reviews/${airport.id}`;
+
+const breadcrumbs = [
+  { name: '首页', url: '/' },
+  { name: '2027机场排行榜', url: '/ranking' },
+  { name: `${airport.name} 评测与套餐`, url: canonicalUrl }
+];
+
+const relatedAirports = AIRPORT_LIST.filter(
+  (a) => a.id !== airport.id && (a.categoryTag === airport.categoryTag || a.rank <= 5)
+).slice(0, 3);
+
+const reviewSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  'name': `${airport.name} - 科学上网专线机场`,
+  'description': airport.tagline,
+  'brand': {
+    '@type': 'Brand',
+    'name': airport.name
+  },
+  'aggregateRating': {
+    '@type': 'AggregateRating',
+    'ratingValue': String(airport.score),
+    'bestRating': '10',
+    'ratingCount': '128'
+  },
+  'offers': {
+    '@type': 'AggregateOffer',
+    'priceCurrency': 'CNY',
+    'lowPrice': airport.price.replace(/[^0-9.]/g, '') || '15.00',
+    'offerCount': String(airport.plans.length)
+  }
+};
+---
+
+<BaseLayout
+  title={`${airport.name} 2027深度评测、最新优惠码与完整${airport.plans.length}档套餐价格表 - 2027机场榜`}
+  description={`${airport.name}最新2027实测详情：起步价${airport.price}${airport.billingCycle}（${airport.startQuota}），流量范围${airport.traffic}，支持${airport.lineType}，峰值速率${airport.peakSpeed}。${airport.couponCode ? '独家优惠码：' + airport.couponCode + '。' : ''}${airport.tagline}`}
+  keywords={[`${airport.name}`, `${airport.name}怎么样`, `${airport.name}套餐价格`, `${airport.name}优惠码`, '2027机场榜', ...airport.tags]}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
+  schema={reviewSchema}
+>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumb items={breadcrumbs} />
+
+    <!-- Brand Overview Hero Card -->
+    <section class="content-wrapper" style="margin-top: 0; margin-bottom: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="flex: 1; min-width: 280px;">
+          <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+            <span class={`card-rank-badge ${airport.rank === 1 ? 'rank-1' : airport.rank === 2 ? 'rank-2' : airport.rank === 3 ? 'rank-3' : 'rank-normal'}`} style="width: auto; padding: 0 0.65rem; font-size: 0.85rem;">
+              2027榜第 #{airport.rank} 名
+            </span>
+            <span class="brand-badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+              {airport.categoryTag}
+            </span>
+            {airport.badge && (
+              <span class="seo-tag" style="color: #0284c7; background: #f0f9ff; border-color: #bae6fd; font-weight: 600;">
+                {airport.badge}
+              </span>
+            )}
+          </div>
+
+          <h1 style="font-size: 2.15rem; font-weight: 800; color: var(--text-heading); line-height: 1.3; margin-bottom: 0.75rem;">
+            {airport.name}：2027深度评测与价格配套（共 {airport.plans.length} 档）
+          </h1>
+          <p style="font-size: 1rem; color: #475569; line-height: 1.65;">
+            {airport.tagline}
+          </p>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; min-width: 240px; text-align: center;">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">官方起步特惠</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #d97706; line-height: 1.1;">
+            {airport.price}<span style="font-size: 0.9rem; font-weight: 600; color: #64748b;">{airport.billingCycle}</span>
+          </div>
+          <div style="font-size: 0.8rem; color: #475569; margin-top: 0.3rem; font-weight: 600;">
+            {airport.startQuota}
+          </div>
+          {airport.yearlyNote && (
+            <div style="font-size: 0.75rem; color: #059669; margin-top: 0.25rem; font-weight: 600;">
+              💡 {airport.yearlyNote}
+            </div>
+          )}
+          <a href={airport.buyUrl} target="_blank" rel="noopener nofollow" class="btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.65rem 1.25rem; font-size: 0.95rem;">
+            前往 {airport.name} 官网开通 ➔
+          </a>
+        </div>
+      </div>
+
+      <!-- Telemetry Bar -->
+      <div class="telemetry-grid" style="margin-bottom: 1.5rem; box-shadow: none; background: #f8fafc;">
+        <div>
+          <div style="font-size: 1.35rem; font-weight: 800; color: #0284c7;">{airport.score} / 10</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">2027综合评分</div>
+        </div>
+        <div>
+          <div style="font-size: 1.35rem; font-weight: 800; color: #059669;">{airport.peakSpeed}</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">节点带宽峰值</div>
+        </div>
+        <div>
+          <div style="font-size: 1.35rem; font-weight: 800; color: #d97706;">{airport.latency}</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">亚太参考延迟</div>
+        </div>
+        <div>
+          <div style="font-size: 1.35rem; font-weight: 800; color: #7c3aed;">{airport.stabilityRate}</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">网络在线率SLA</div>
+        </div>
+      </div>
+
+      <!-- Exclusive Coupon Banner -->
+      {(airport.couponCode || airport.couponDesc) && (
+        <div style="background: #fffbeb; border: 1px dashed #f59e0b; border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 1.35rem;">🎟️</span>
+            <div>
+              <div style="font-size: 0.95rem; font-weight: 700; color: #92400e;">
+                {airport.couponCode ? `独家优惠码：${airport.couponCode}` : '官方专属折扣通道'}
+              </div>
+              <div style="font-size: 0.84rem; color: #b45309;">
+                {airport.couponDesc}
+              </div>
+            </div>
+          </div>
+          {airport.couponCode ? (
+            <button
+              type="button"
+              class="copy-coupon-btn"
+              data-copy-coupon={airport.couponCode}
+              style="background: #f59e0b; color: #ffffff; border: none; padding: 0.45rem 1rem; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.85rem; cursor: pointer;"
+            >
+              📋 点击复制优惠码: {airport.couponCode}
+            </button>
+          ) : (
+            <a href={airport.buyUrl} target="_blank" rel="noopener nofollow" class="btn-primary" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+              直达官网享周期特惠 ➔
+            </a>
+          )}
+        </div>
+      )}
+
+      <!-- Core Advantages Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.75rem;">
+            ✨ 核心优势与线路特性
+          </h2>
+          <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; font-size: 0.88rem; color: #334155;">
+            {airport.features.map((feat) => (
+              <li style="display: flex; align-items: flex-start; gap: 0.45rem;">
+                <span style="color: #059669; font-weight: 800;">✓</span>
+                <span>{feat}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.75rem;">
+            🌐 解锁能力与适用人群
+          </h2>
+          <div style="display: grid; gap: 0.55rem; font-size: 0.88rem; color: #334155;">
+            <div><strong>骨干架构：</strong>{airport.lineType}</div>
+            <div><strong>流量跨度：</strong>{airport.traffic}</div>
+            <div><strong>流媒体解锁：</strong><span style="color: #059669; font-weight: 600;">{airport.streamingUnlock}</span></div>
+            <div><strong>AI 大模型：</strong><span style="color: #0284c7; font-weight: 600;">{airport.aiUnlock}</span></div>
+            <div><strong>推荐人群：</strong>{airport.suitableFor}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All Plans Pricing Matrix Section -->
+    <section style="margin-bottom: 3rem;">
+      <div class="section-header" style="margin-top: 1.5rem;">
+        <div>
+          <h2 class="section-title">
+            <span>💰</span>
+            <span>{airport.name} 完整套餐与流量资费明细（共 {airport.plans.length} 档）</span>
+          </h2>
+          <p class="section-subtitle">涵盖月付周期、高折扣年付包及永不过期按量买断包，数据与官方同步更新</p>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 1.25rem;">
+        {airport.plans.map((plan) => (
+          <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.4rem; display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span style="font-size: 0.74rem; font-weight: 700; color: #1d4ed8; background: #eff6ff; border: 1px solid #bfdbfe; padding: 0.15rem 0.55rem; border-radius: 4px;">
+                {plan.cycle}
+              </span>
+              <span style="font-size: 0.75rem; color: #059669; font-weight: 600;">
+                {plan.devices === '不限' ? '不限在线设备' : plan.devices}
+              </span>
+            </div>
+
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.25rem;">
+              {plan.name}
+            </h3>
+            {plan.sub && (
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.4;">
+                {plan.sub}
+              </p>
+            )}
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem 0.9rem; margin-bottom: 0.9rem;">
+              <div style="font-size: 1.35rem; font-weight: 800; color: #d97706;">
+                {plan.price}
+              </div>
+              {plan.discountedPrice && (
+                <div style="font-size: 0.78rem; color: #059669; font-weight: 700; margin-top: 0.2rem;">
+                  🏷️ {plan.discountedPrice}
+                </div>
+              )}
+              <div style="display: flex; justify-content: space-between; margin-top: 0.55rem; padding-top: 0.55rem; border-top: 1px dashed #cbd5e1; font-size: 0.8rem; color: #334155;">
+                <span>📦 流量：<strong>{plan.traffic}</strong></span>
+                <span>⚡ 速率：<strong>{plan.speed}</strong></span>
+              </div>
+            </div>
+
+            <ul style="list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: 0.4rem; font-size: 0.82rem; color: #475569; flex: 1;">
+              {plan.features.map((f) => (
+                <li style="display: flex; align-items: flex-start; gap: 0.4rem;">
+                  <span style="color: #2563eb; font-weight: 700;">•</span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={airport.buyUrl}
+              target="_blank"
+              rel="noopener nofollow"
+              class="btn-primary"
+              style="width: 100%; padding: 0.55rem 1rem; font-size: 0.86rem; text-align: center;"
+            >
+              立即前往官网开通此套餐 ➔
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Comparison Brands -->
+    <section style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+      <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-heading); margin-bottom: 1.25rem;">
+        🔄 同级别或榜单优选横向对比
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+        {relatedAirports.map((rel) => (
+          <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.15rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-weight: 700; color: var(--text-heading);">#{rel.rank} {rel.name}</span>
+              <span style="font-weight: 800; color: #d97706;">{rel.price}{rel.billingCycle}</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+              {rel.traffic} · {rel.lineType}
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href={`/reviews/${rel.id}`} class="btn-secondary" style="flex: 1; padding: 0.35rem 0.5rem; font-size: 0.78rem; justify-content: center;">
+                查看 {rel.plans.length} 档套餐
+              </a>
+              <a href={rel.buyUrl} target="_blank" rel="noopener nofollow" class="btn-primary" style="flex: 1; padding: 0.35rem 0.5rem; font-size: 0.78rem; justify-content: center;">
+                直达官网
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style="margin-top: 2.5rem; text-align: center; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="/ranking" class="btn-secondary" style="padding: 0.65rem 1.5rem;">
+          ⬅️ 返回 35 家完整榜单
+        </a>
+        <a href="/clients" class="btn-secondary" style="padding: 0.65rem 1.5rem;">
+          📱 下载全平台 Clash 客户端
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

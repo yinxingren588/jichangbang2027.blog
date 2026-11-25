@@ -1,0 +1,384 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AirportCard from '../components/AirportCard.astro';
+import RankingTable from '../components/RankingTable.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+import { AIRPORT_LIST, SEO_METRICS } from '../data/airports';
+import { FAQS_DATA, FAQ_CATEGORIES } from '../data/faqs';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+const sortedPosts = posts.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()).slice(0, 6);
+
+const homeFaqs = FAQS_DATA.slice(0, 10);
+
+const categoryIcons: Record<string, { icon: string; desc: string }> = {
+  '专线与网络架构': { icon: '🌐', desc: 'IPLC/IEPL区别、三网BGP、真假专线鉴别' },
+  'AI与流媒体解锁': { icon: '🤖', desc: 'ChatGPT 1020、Claude防封、Gemini与奈飞' },
+  '客户端与故障排查': { icon: '🛠️', desc: '节点超时全红、Apple ID避坑、Tun虚拟网卡' },
+  '避坑与安全选购': { icon: '🛡️', desc: '防跑路法则、双持策略、USDT匿名隐私支付' },
+  '开发与极客进阶': { icon: '💻', desc: 'Cursor HTTP/2、Git/Docker代理、YAML覆写' },
+  '路由器与硬件设备': { icon: '📡', desc: 'OpenClash对比HomeProxy、旁路由、Switch联机' },
+};
+
+// Structured ItemList schema for Bing SEO
+const rankingItemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  'name': '2027机场榜 - 2027最新高性价比梯子与节点排行榜',
+  'description': '2027年权威实测科学上网机场推荐榜单，涵盖高端IEPL/IPLC专线与平价大流量机场',
+  'itemListElement': AIRPORT_LIST.map((item, index) => ({
+    '@type': 'ListItem',
+    'position': index + 1,
+    'name': item.name,
+    'url': `https://jichangbang2027.blog/#airport-${item.id}`
+  }))
+};
+
+const faqPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': homeFaqs.map((faq) => ({
+    '@type': 'Question',
+    'name': faq.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': faq.answer,
+      'url': `https://jichangbang2027.blog/faq/${faq.id}`
+    }
+  }))
+};
+---
+
+<BaseLayout
+  title="2027机场榜 - 2027年最新高性价比翻墙节点/高速稳定科学上网机场推荐评测"
+  description={`2027机场榜（jichangbang2027.blog）是2027年度专注科学上网梯子与节点评测排名的第一门户。深度实测${AIRPORT_LIST.length}家主流IPLC/IEPL专线机场、平价大流量节点、4K/8K流媒体解锁、ChatGPT/Claude原生IP，并提供${FAQS_DATA.length}篇独立排错百科指南。`}
+  keywords={SEO_METRICS.keywordsList}
+  canonicalUrl="https://jichangbang2027.blog/"
+  schema={[rankingItemListSchema, faqPageSchema]}
+>
+  <!-- Hero Section with Exact Match Keyword for Bing SEO -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-pill">
+        <span>🚀 2027最新实测更新</span>
+        <span style="color: #94a3b8;">|</span>
+        <span>全网深度监测 {AIRPORT_LIST.length} 款精选机场 · {FAQS_DATA.length} 篇排错百科</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="gradient-text">2027机场榜</span>：精选最新高速稳定梯子与翻墙节点推荐评测
+      </h1>
+
+      <p class="hero-desc">
+        在2027年网络审查与AI风控不断演进的环境下，我们基于三网（电信/联通/移动）家庭宽带与移动5G真实网络环境，24小时持续监测全网主流机场。为您筛选出<strong>纯IEPL内网专线、0丢包低延迟、秒开8K视频、原生住宅IP解锁ChatGPT与TikTok</strong>的可靠梯子，告别断流与跑路风险。
+      </p>
+
+      <div style="display: flex; justify-content: center; gap: 0.85rem; margin-bottom: 1.75rem; flex-wrap: wrap;">
+        <a href="#ranking-cards" class="btn-primary" style="font-size: 0.98rem; padding: 0.72rem 1.65rem;">
+          🔥 立即查看2027机场排行榜
+        </a>
+        <a href="/reviews" class="btn-secondary" style="font-size: 0.98rem; padding: 0.72rem 1.35rem;">
+          💰 35家套餐价格与优惠码明细
+        </a>
+        <a href="/clients" class="btn-secondary" style="font-size: 0.98rem; padding: 0.72rem 1.35rem;">
+          📱 官方客户端下载
+        </a>
+        <a href="/faq" class="btn-secondary" style="font-size: 0.98rem; padding: 0.72rem 1.35rem;">
+          💡 {FAQS_DATA.length} 篇硬核 FAQ
+        </a>
+      </div>
+
+      <!-- Quick Site Search Widget -->
+      <form id="hero-search-form" action="/ranking" method="get" style="max-width: 660px; margin: 0 auto 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <input
+          type="text"
+          name="q"
+          id="hero-search-input"
+          placeholder="🔍 搜品牌名/线路/故障（如：隐形人、IEPL、ChatGPT、超时、Switch）..."
+          style="flex: 1; min-width: 240px; padding: 0.72rem 1.1rem; border-radius: var(--radius-md); border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; font-size: 0.92rem; outline: none; box-shadow: 0 2px 6px rgba(0,0,0,0.03);"
+        />
+        <button type="submit" class="btn-primary" style="padding: 0.72rem 1.15rem; font-size: 0.88rem; white-space: nowrap;">
+          搜机场榜单
+        </button>
+        <button type="button" id="hero-search-faq-btn" class="btn-secondary" style="padding: 0.72rem 1.1rem; font-size: 0.88rem; white-space: nowrap;">
+          搜 FAQ 百科
+        </button>
+      </form>
+
+      <!-- Live Benchmarking Telemetry -->
+      <div class="telemetry-grid">
+        <div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #0284c7;">{AIRPORT_LIST.length} 家</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">收录实测品牌</div>
+        </div>
+        <div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #059669;">2.5 Gbps</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">单节点实测物理峰值</div>
+        </div>
+        <div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #d97706;">18 ms</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">亚太专线最低延迟</div>
+        </div>
+        <div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #7c3aed;">{FAQS_DATA.length} 篇</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">独立技术排错指南</div>
+        </div>
+      </div>
+
+      <div class="hero-meta-badges">
+        <div class="meta-item">
+          <span>⚡</span>
+          <span>纯物理IEPL/IPLC专线</span>
+        </div>
+        <div class="meta-item">
+          <span>🛡️</span>
+          <span>晚高峰 0 丢包不卡顿</span>
+        </div>
+        <div class="meta-item">
+          <span>🤖</span>
+          <span>ChatGPT/Claude原生解锁</span>
+        </div>
+        <div class="meta-item">
+          <span>🎬</span>
+          <span>Netflix/YouTube 8K秒播</span>
+        </div>
+        <div class="meta-item">
+          <span>📱</span>
+          <span>Clash/Sing-box全平台一键导入</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scenario Quick Navigation -->
+  <section class="container" style="margin-bottom: 2.5rem;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+      <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-heading); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span>🎯</span>
+        <span>按使用场景快速挑机场 (2027速选指南)</span>
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="color: #7c3aed; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;">👑 极致稳定 / 外贸商务</div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">要求晚高峰0丢包、敏感期不失联、SLA可用率99.9%以上。</p>
+          <div style="font-size: 0.85rem; font-weight: 600;">推荐：<a href="#airport-yinxingren">隐形人</a> · <a href="#airport-dalao-cloud">大佬云</a></div>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="color: #059669; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;">🤖 ChatGPT / AI大模型</div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">住宅原生双ISP节点，不弹验证码，防止OpenAI/Claude封号。</p>
+          <div style="font-size: 0.85rem; font-weight: 600;">推荐：<a href="#airport-yinxingren">隐形人</a> · <a href="#airport-civet">灵猫</a> · <a href="#airport-kuajie">跨界云</a></div>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="color: #d97706; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;">🎮 外服游戏 / 极低延迟</div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">深港/沪日专属低延时通道，平均延迟&lt;30ms，联机对战无跳ping。</p>
+          <div style="font-size: 0.85rem; font-weight: 600;">推荐：<a href="#airport-muguang">暮光加速</a> · <a href="#airport-xingdaomeng">星岛梦</a></div>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="color: #2563eb; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;">💰 平价实惠 / 学生大流量</div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">月费仅需十几元，单G流量成本极低，追剧下载毫无心疼感。</p>
+          <div style="font-size: 0.85rem; font-weight: 600;">推荐：<a href="#airport-flycat">飞猫云</a> · <a href="#airport-shandianshu">闪电鼠</a> · <a href="#airport-kuaili">快狸</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Cards Section -->
+  <section class="container" id="ranking-cards">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">
+          <span>🏆</span>
+          <span>2027机场榜精选首发梯队 (TOP 8)</span>
+        </h2>
+        <p class="section-subtitle">基于晚高峰测速、物理专线架构、流媒体与AI解锁能力综合评定</p>
+      </div>
+      <div>
+        <a href="/ranking" style="color: #2563eb; font-size: 0.92rem; font-weight: 600;">
+          查看全部 {AIRPORT_LIST.length} 款完整榜单 ➔
+        </a>
+      </div>
+    </div>
+
+    <div class="airport-grid">
+      {AIRPORT_LIST.slice(0, 8).map((airport) => (
+        <AirportCard airport={airport} />
+      ))}
+    </div>
+
+    <div style="text-align: center; margin: -1rem 0 3rem;">
+      <a href="/ranking" class="btn-primary" style="padding: 0.85rem 2.25rem; font-size: 1.05rem;">
+        🔥 查看全部 {AIRPORT_LIST.length} 家 2027 机场完整榜单与详细测评 ➔
+      </a>
+    </div>
+  </section>
+
+  <!-- Complete Comparison Table Section -->
+  <section class="container" style="margin-top: 1rem;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">
+          <span>📊</span>
+          <span>2027机场榜横向参数全景对比</span>
+        </h2>
+        <p class="section-subtitle">一目了然对比线路架构、晚高峰跑分、起始价格与流媒体/AI支持</p>
+      </div>
+    </div>
+
+    <RankingTable limit={12} />
+
+    <div style="text-align: center; margin: 1.25rem 0 3rem;">
+      <a href="/ranking" class="btn-secondary" style="padding: 0.65rem 1.75rem;">
+        进入专属页面查看全部 {AIRPORT_LIST.length} 款完整对比参数 ➔
+      </a>
+    </div>
+  </section>
+
+  <!-- Deep Dive Educational Content (Bing SEO Topical Authority) -->
+  <section class="container" style="margin-top: 2rem;">
+    <article class="content-wrapper">
+      <h2 style="font-size: 1.85rem; margin-top: 0; color: var(--text-heading);">
+        为什么在2027年选择科学上网梯子必须认准【2027机场榜】？
+      </h2>
+      <div class="article-content" style="margin-top: 1.25rem;">
+        <p>
+          对于每一位需要经常查阅海外文献资料、从事跨国跨境贸易、使用 GitHub/Docker/Cursor 开发、或者希望流畅观看海外 4K/8K 流媒体影音以及使用全球顶尖 AI 工具（OpenAI ChatGPT-4o/Sora、Anthropic Claude 3.5、Google Gemini Advanced）的用户而言，一个<strong>高速、稳定、高可用</strong>的翻墙节点是数字生活不可或缺的基础设施。
+        </p>
+
+        <h3>2027年科学上网面临的新变化与新挑战</h3>
+        <ul>
+          <li><strong>GFW深度封锁再升级</strong>：传统的裸协议（如旧版 Shadowsocks、直连 VMess）在国际出口极易被特征识别并阻断，只有具备<strong>端到端内网物理专线（IEPL/IPLC）</strong>或<strong>现代防审查协议（Reality、Hysteria 2、TUIC）</strong>的机场才能安稳存活（<a href="/faq/iplc-vs-iepl-difference">深入解析专线原理 ➔</a>）。</li>
+          <li><strong>AI与流媒体平台风控加剧</strong>：OpenAI、Anthropic 及各大流媒体服务对数据中心云厂商（如 AWS、DigitalOcean、Linode）的机房 IP 实施了大规模封禁与降权。在【2027机场榜】中，我们重点挑选拥有<strong>纯净双ISP住宅原生IP</strong>的机场（如<strong>隐形人、灵猫</strong>），避免“Access Denied 1020”或频繁弹验证码（<a href="/faq/chatgpt-claude-access-denied-solution">查看AI防封教程 ➔</a>）。</li>
+          <li><strong>小作坊跑路频发</strong>：廉价超售小机场常常在开盘数月后因资不抵债关站跑路。【2027机场榜】坚持只收录运营稳定、具备持续技术投入的正规服务商（<a href="/faq/how-to-prevent-airport-runaway">阅读防跑路四大法则 ➔</a>）。</li>
+        </ul>
+
+        <!-- Testing Environment Card -->
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin: 1.5rem 0;">
+          <h4 style="margin: 0 0 0.5rem; font-size: 1.05rem; color: #1e293b; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🔬</span>
+            <span>【2027机场榜】权威测试环境公开说明</span>
+          </h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.75rem;">
+            所有上榜机场均接受 7×24 小时全自动监测节点可用率，并在晚高峰黄金时段（20:00 - 23:00）进行真实带宽压测：
+          </p>
+          <ul style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 0; padding-left: 1.25rem;">
+            <li><strong>接入测试网络</strong>：中国电信 1000M FTTH 光纤、中国联通 1000M FTTH 光纤、中国移动 1000M FTTH 及 5G 蜂窝网络</li>
+            <li><strong>测速基准工具</strong>：Speedtest CLI 官方节点多线程压测、Fast.com 国际流媒体并发测速、YouTube 8K 统计数据缓冲区监控</li>
+            <li><strong>IP纯净度评估</strong>：Scamalytics 欺诈风险评分、IPinfo ASN 性质校验（筛选双ISP原生住宅属性）</li>
+          </ul>
+        </div>
+
+        <blockquote>
+          <strong>2027机场榜评测室提示：</strong> 选购机场永远牢记“一分钱一分货”，不要盲目贪图“几元包年”的劣质节点，主力优先选用高品质专线（如隐形人、暮光加速、大佬云），辅以平价大流量备用（如飞猫云、闪电鼠、快狸），是保障全天候不断网的<a href="/faq/double-airport-strategy">双持最佳策略</a>。
+        </blockquote>
+      </div>
+    </article>
+  </section>
+
+  <!-- Latest Blog Posts Section -->
+  <section class="container" style="margin-top: 1rem;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">
+          <span>📝</span>
+          <span>2027机场榜最新评测与教程专栏</span>
+        </h2>
+        <p class="section-subtitle">紧跟行业技术前沿，掌握一手测速报告与客户端配置技巧</p>
+      </div>
+      <div>
+        <a href="/posts" style="color: #2563eb; font-size: 0.92rem; font-weight: 600;">
+          浏览全部文章 ➔
+        </a>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+      {sortedPosts.map((post) => (
+        <article class="airport-card" style="padding: 1.25rem;">
+          <div style="font-size: 0.78rem; color: #0284c7; font-weight: 700; margin-bottom: 0.5rem;">
+            {post.data.category}
+          </div>
+          <h3 style="font-size: 1.1rem; line-height: 1.4; margin-bottom: 0.75rem;">
+            <a href={`/posts/${post.id}`} style="color: var(--text-heading);" title={post.data.title}>
+              {post.data.title}
+            </a>
+          </h3>
+          <p style="font-size: 0.85rem; color: #475569; line-height: 1.55; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+            {post.data.description}
+          </p>
+          <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-muted);">
+            <span>📅 {post.data.pubDate}</span>
+            <a href={`/posts/${post.id}`} style="color: #2563eb; font-weight: 600;">
+              阅读全文 ➔
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- 6-Category Knowledge Base Matrix + Top Curated FAQs -->
+  <section class="container" style="margin-bottom: 4rem;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">
+          <span>❓</span>
+          <span>2027机场榜权威 FAQ 百科与排错指南 ({FAQS_DATA.length} 篇独立长文)</span>
+        </h2>
+        <p class="section-subtitle">精选 10 个核心高频提问，每个问题均配有独立的硬核排错长文与解决方案</p>
+      </div>
+      <div>
+        <a href="/faq" style="color: #2563eb; font-size: 0.92rem; font-weight: 600;">
+          查看全部 {FAQS_DATA.length} 篇知识百科 ➔
+        </a>
+      </div>
+    </div>
+
+    <!-- 6-Topic FAQ Directory Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.85rem; margin-bottom: 2rem;">
+      {FAQ_CATEGORIES.map((cat) => {
+        const count = FAQS_DATA.filter((f) => f.category === cat).length;
+        const meta = categoryIcons[cat] || { icon: '📘', desc: '' };
+        return (
+          <a
+            href="/faq"
+            style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 0.75rem; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: border-color 0.2s;"
+          >
+            <span style="font-size: 1.4rem; line-height: 1;">{meta.icon}</span>
+            <div>
+              <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.2rem;">
+                {cat} <span style="color: #2563eb; font-size: 0.78rem;">({count}篇)</span>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+                {meta.desc}
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <FaqAccordion faqs={homeFaqs} />
+
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="/faq" class="btn-primary" style="padding: 0.8rem 2rem; font-size: 0.98rem;">
+        💡 浏览全部 {FAQS_DATA.length} 篇独立解决方案与排错百科 ➔
+      </a>
+    </div>
+  </section>
+
+  <script>
+    const heroSearchInput = document.getElementById('hero-search-input') as HTMLInputElement | null;
+    const heroFaqBtn = document.getElementById('hero-search-faq-btn');
+
+    if (heroFaqBtn && heroSearchInput) {
+      heroFaqBtn.addEventListener('click', () => {
+        const q = heroSearchInput.value.trim();
+        window.location.href = q ? `/faq?q=${encodeURIComponent(q)}` : '/faq';
+      });
+    }
+  </script>
+</BaseLayout>

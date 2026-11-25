@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 - 页面未找到 | 2027机场榜"
+  description="抱歉，您访问的页面不存在或已被移除。请返回2027机场榜首页查看最新梯子节点推荐。"
+  canonicalUrl="https://jichangbang2027.blog/404"
+>
+  <div class="container" style="padding: 5rem 1.25rem; text-align: center;">
+    <div style="font-size: 5rem; font-weight: 800; color: #3b82f6; line-height: 1; margin-bottom: 1rem;">
+      404
+    </div>
+    <h1 style="font-size: 2rem; color: var(--text-heading); margin-bottom: 1rem;">
+      抱歉，该页面似乎飞往了未知的太空
+    </h1>
+    <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 2rem; font-size: 1.05rem;">
+      您所寻找的评测页面可能已移动或下线。不用担心，您可以点击下方按钮立即返回【2027机场榜】核心排行榜。
+    </p>
+    <div style="display: flex; justify-content: center; gap: 1rem;">
+      <a href="/" class="btn-primary" style="padding: 0.75rem 1.75rem; font-size: 1rem;">
+        返回【2027机场榜】首页 🚀
+      </a>
+      <a href="/ranking" class="btn-secondary" style="padding: 0.75rem 1.75rem; font-size: 1rem;">
+        查看2027机场排行榜
+      </a>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,16 @@
+{
+  "name": "2027机场榜 - 科学上网与稳定翻墙节点评测推荐",
+  "short_name": "2027机场榜",
+  "description": "2027年最新稳定高速机场排行榜与梯子节点推荐，涵盖IPLC专线、流媒体4K/8K解锁、ChatGPT/TikTok低延迟节点评测。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "jichangbang2027-blog",
+  "version": "1.0.0",
+  "description": "2027机场榜 - 2027最新高性价比科学上网节点与稳定专线机场推荐评测博客",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "keywords": [
+    "2027机场榜",
+    "2027机场推荐",
+    "机场排行榜",
+    "科学上网",
+    "翻墙机场",
+    "IPLC专线",
+    "Clash节点",
+    "Sing-box节点",
+    "Shadowrocket"
+  ],
+  "author": "2027机场榜团队",
+  "license": "MIT",
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.6",
+    "astro": "^7.4.13"
+  }
+}

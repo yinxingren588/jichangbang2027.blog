@@ -1,0 +1,90 @@
+---
+import { AIRPORT_LIST } from '../data/airports';
+
+export interface Props {
+  limit?: number;
+}
+
+const { limit } = Astro.props;
+const list = limit ? AIRPORT_LIST.slice(0, limit) : AIRPORT_LIST;
+---
+
+<div class="table-wrapper">
+  <table class="ranking-table">
+    <thead>
+      <tr>
+        <th>排名</th>
+        <th>机场名称</th>
+        <th>分类定位</th>
+        <th>专线架构 &amp; 核心优势</th>
+        <th>起步价格</th>
+        <th>全系流量档位</th>
+        <th>高峰速率</th>
+        <th>专属优惠码</th>
+        <th>套餐 &amp; 官网</th>
+      </tr>
+    </thead>
+    <tbody>
+      {list.map((item) => (
+        <tr data-category={item.categoryTag}>
+          <td>
+            <span class={`card-rank-badge ${item.rank === 1 ? 'rank-1' : item.rank === 2 ? 'rank-2' : item.rank === 3 ? 'rank-3' : 'rank-normal'}`} style="width: 26px; height: 26px; font-size: 0.85rem; display: inline-flex;">
+              {item.rank}
+            </span>
+          </td>
+          <td>
+            <a href={item.reviewUrl} style="color: var(--text-heading); font-weight: 700;">
+              {item.name}
+            </a>
+            {item.badge && <div style="font-size: 0.75rem; color: #0284c7; font-weight: 600; margin-top: 0.15rem;">{item.badge}</div>}
+          </td>
+          <td>
+            <span class="seo-tag" style="font-size: 0.75rem; white-space: nowrap; font-weight: 600; color: #1d4ed8; background: #eff6ff; border: 1px solid #bfdbfe;">
+              {item.categoryTag}
+            </span>
+          </td>
+          <td style="font-size: 0.82rem; color: #334155; font-weight: 500; max-width: 210px; line-height: 1.45;">
+            <div>{item.lineType}</div>
+            {item.yearlyNote && <div style="font-size: 0.73rem; color: #059669; font-weight: 600; margin-top: 0.15rem;">{item.yearlyNote}</div>}
+          </td>
+          <td>
+            <span style="color: #d97706; font-weight: 800; font-size: 0.95rem;">{item.price}</span>
+            <div style="font-size: 0.72rem; color: #64748b; font-weight: 500;">{item.startQuota}</div>
+          </td>
+          <td style="font-size: 0.8rem; color: #334155; font-weight: 600; max-width: 165px;">
+            {item.traffic}
+          </td>
+          <td>
+            <span style="color: #0284c7; font-weight: 700; font-size: 0.84rem; white-space: nowrap;">
+              ⚡ {item.peakSpeed}
+            </span>
+          </td>
+          <td>
+            {item.couponCode ? (
+              <button
+                type="button"
+                data-copy-coupon={item.couponCode}
+                title="点击复制优惠码"
+                style="background: #fffbeb; color: #b45309; border: 1px dashed #f59e0b; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap;"
+              >
+                🎟️ {item.couponCode}
+              </button>
+            ) : (
+              <span style="font-size: 0.75rem; color: #64748b; white-space: nowrap;">周期自带折扣</span>
+            )}
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.35rem; align-items: center;">
+              <a href={item.reviewUrl} class="btn-secondary" style="padding: 0.35rem 0.55rem; font-size: 0.76rem; white-space: nowrap; font-weight: 600;">
+                {item.plans.length}档明细
+              </a>
+              <a href={item.buyUrl} class="btn-primary" style="padding: 0.35rem 0.7rem; font-size: 0.78rem; white-space: nowrap; font-weight: 600;" target="_blank" rel="noopener nofollow">
+                直达 🚀
+              </a>
+            </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

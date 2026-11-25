@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+const sortedPosts = posts.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+const postCategories = ['全部文章', ...Array.from(new Set(sortedPosts.map((p) => p.data.category || '其他')))];
+
+const breadcrumbs = [
+  { name: '首页', url: '/' },
+  { name: '2027机场榜评测博客', url: '/posts' }
+];
+---
+
+<BaseLayout
+  title="2027机场榜博客专栏 - 最新科学上网评测与技术教程"
+  description="2027机场榜官方评测专栏，提供权威的梯子节点测速跑分、IEPL专线质量深度剖析、ChatGPT原生住宅IP防封指南、平价机场合集、以及Clash与Sing-box客户端配置指南。"
+  keywords={['2027机场榜博客', '机场测评文章', '科学上网教程', '翻墙节点测评', 'Clash配置指南', 'ChatGPT专用梯子']}
+  canonicalUrl="https://jichangbang2027.blog/posts"
+>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumb items={breadcrumbs} />
+
+    <header style="margin-bottom: 2.25rem; text-align: center;">
+      <div class="hero-pill">📚 深度评测与教程专栏 · 共收录 {sortedPosts.length} 篇权威长文</div>
+      <h1 class="hero-title" style="font-size: 2.35rem;">
+        2027机场榜：深度评测报告与实用教程
+      </h1>
+      <p class="hero-desc" style="max-width: 780px;">
+        深入解析 2027 年科学上网网络技术前沿，为您带来一手严谨的三网节点测速、底层传输协议解析、AI原生住宅防封与客户端避坑干货。
+      </p>
+
+      <!-- Category Filter Tabs -->
+      <div style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.5rem;">
+        {postCategories.map((cat, idx) => (
+          <button
+            type="button"
+            class={`post-filter-btn ${idx === 0 ? 'active' : ''}`}
+            data-cat={cat}
+            style="padding: 0.45rem 1.05rem; border-radius: 9999px; font-size: 0.86rem; font-weight: 600; border: 1px solid var(--border-color); background: #ffffff; color: var(--text-main); cursor: pointer; transition: all 0.2s;"
+          >
+            {cat} ({cat === '全部文章' ? sortedPosts.length : sortedPosts.filter((p) => (p.data.category || '其他') === cat).length})
+          </button>
+        ))}
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.75rem;" id="posts-grid">
+      {sortedPosts.map((post) => (
+        <article class="airport-card post-card-item" data-cat={post.data.category || '其他'} style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span class="brand-badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+              {post.data.category}
+            </span>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">
+              📅 {post.data.pubDate}
+            </span>
+          </div>
+
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-heading); line-height: 1.4; margin-bottom: 0.75rem;">
+            <a href={`/posts/${post.id}`} style="color: var(--text-heading);" title={post.data.title}>
+              {post.data.title}
+            </a>
+          </h2>
+
+          <p style="font-size: 0.9rem; color: #475569; line-height: 1.65; margin-bottom: 1.25rem; flex: 1;">
+            {post.data.description}
+          </p>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem;">
+            {(post.data.tags || []).slice(0, 3).map((tag) => (
+              <span class="seo-tag">{tag}</span>
+            ))}
+          </div>
+
+          <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">✍️ {post.data.author}</span>
+            <a href={`/posts/${post.id}`} class="btn-primary" style="padding: 0.42rem 0.95rem; font-size: 0.82rem; font-weight: 600;">
+              阅读全文 ➔
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Link Banner to 45 Standalone FAQ Guides -->
+    <div class="content-wrapper" style="margin-top: 3.5rem; text-align: center; background: #f8fafc;">
+      <h3 style="color: var(--text-heading); margin-bottom: 0.75rem;">查找具体报错排查、客户端设置或软路由硬件疑问？</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+        我们为您单独打造了涵盖 45 个具体真实问题场景的独立解决方案知识库，一键检索秒速解决。
+      </p>
+      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="/faq" class="btn-primary">💡 前往 45 篇硬核 FAQ 知识百科</a>
+        <a href="/ranking" class="btn-secondary">📊 查阅 35 家年度机场榜单</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const postBtns = document.querySelectorAll('.post-filter-btn');
+    const postCards = document.querySelectorAll('.post-card-item');
+
+    postBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        postBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        const targetCat = btn.getAttribute('data-cat');
+
+        postCards.forEach((card) => {
+          const cardCat = card.getAttribute('data-cat');
+          (card as HTMLElement).style.display = (targetCat === '全部文章' || cardCat === targetCat) ? 'flex' : 'none';
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .post-filter-btn:hover {
+      border-color: #93c5fd !important;
+      color: #2563eb !important;
+      background: #eff6ff !important;
+    }
+    .post-filter-btn.active {
+      background: #2563eb !important;
+      color: #ffffff !important;
+      border-color: #2563eb !important;
+    }
+  </style>
+</BaseLayout>

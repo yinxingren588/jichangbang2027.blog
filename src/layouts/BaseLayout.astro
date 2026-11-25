@@ -1,0 +1,71 @@
+---
+import SEOHead from '../components/SEOHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  canonicalUrl?: string;
+  ogType?: string;
+  ogImage?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  articleSection?: string;
+  schema?: Record<string, any> | Record<string, any>[];
+}
+
+const props = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <SEOHead {...props} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Global Coupon Copy Toast & Click Handler -->
+    <div id="coupon-toast" style="position: fixed; bottom: 24px; right: 24px; z-index: 100; background: #0f172a; color: #ffffff; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.88rem; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: none; align-items: center; gap: 0.5rem;">
+      <span style="color: #34d399;">✓</span>
+      <span id="coupon-toast-msg">优惠码已复制到剪贴板</span>
+    </div>
+
+    <script>
+      document.addEventListener('click', async (e) => {
+        const target = (e.target as HTMLElement)?.closest('[data-copy-coupon]') as HTMLElement | null;
+        if (!target) return;
+        const code = target.getAttribute('data-copy-coupon');
+        if (!code) return;
+
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const tmp = document.createElement('input');
+          tmp.value = code;
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          document.body.removeChild(tmp);
+        }
+
+        const toast = document.getElementById('coupon-toast');
+        const msg = document.getElementById('coupon-toast-msg');
+        if (toast && msg) {
+          msg.textContent = `优惠码「${code}」已复制，下单结算时粘贴即可立减！`;
+          toast.style.display = 'flex';
+          setTimeout(() => {
+            toast.style.display = 'none';
+          }, 2600);
+        }
+      });
+    </script>
+  </body>
+</html>

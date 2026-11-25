@@ -1,0 +1,181 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { FAQS_DATA } from '../../data/faqs';
+
+export async function getStaticPaths() {
+  const faqs = await getCollection('faqs');
+  return faqs.map((faqEntry) => {
+    const rawFaq = FAQS_DATA.find((item) => item.id === faqEntry.id);
+    return {
+      params: { slug: faqEntry.id },
+      props: { faqEntry, rawFaq },
+    };
+  });
+}
+
+const { faqEntry, rawFaq } = Astro.props;
+const { Content } = await render(faqEntry);
+
+const canonicalUrl = `https://jichangbang2027.blog/faq/${faqEntry.id}`;
+
+const breadcrumbs = [
+  { name: '首页', url: '/' },
+  { name: '常见问题与知识库 (FAQ)', url: '/faq' },
+  { name: faqEntry.data.question, url: canonicalUrl }
+];
+
+const qaSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'QAPage',
+  'mainEntity': {
+    '@type': 'Question',
+    'name': faqEntry.data.question,
+    'text': faqEntry.data.summary,
+    'answerCount': 1,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': rawFaq?.answer || faqEntry.data.summary,
+      'url': canonicalUrl
+    }
+  }
+};
+
+const categoryPillColors: Record<string, string> = {
+  '专线与网络架构': 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;',
+  'AI与流媒体解锁': 'background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;',
+  '客户端与故障排查': 'background: #fffbeb; color: #b45309; border: 1px solid #fde68a;',
+  '避坑与安全选购': 'background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8;',
+  '开发与极客进阶': 'background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe;',
+  '路由器与硬件设备': 'background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd;'
+};
+---
+
+<BaseLayout
+  title={`${faqEntry.data.question} - 2027机场榜技术问答`}
+  description={faqEntry.data.summary}
+  keywords={faqEntry.data.keywords}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
+  publishedTime={faqEntry.data.pubDate}
+  modifiedTime={faqEntry.data.updatedDate}
+  schema={qaSchema}
+>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumb items={breadcrumbs} />
+
+    <article class="content-wrapper">
+      <header style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; align-items: center;">
+          <span class="brand-badge" style={categoryPillColors[faqEntry.data.category] || ''}>
+            {faqEntry.data.category}
+          </span>
+          <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">
+            2027机场榜官方权威技术问答
+          </span>
+        </div>
+
+        <h1 style="font-size: 2.1rem; font-weight: 800; color: var(--text-heading); line-height: 1.35; margin-bottom: 1rem;">
+          {faqEntry.data.question}
+        </h1>
+
+        <div style="display: flex; gap: 1.5rem; color: var(--text-muted); font-size: 0.88rem; flex-wrap: wrap;">
+          <span>✍️ 解答团队：2027机场榜技术专家组</span>
+          <span>📅 实测更新：{faqEntry.data.updatedDate}</span>
+          <span>⏱️ 阅读建议：4-6分钟</span>
+        </div>
+      </header>
+
+      <!-- TL;DR Fast Answer Box -->
+      <div style="background: #f8fafc; border-left: 4px solid #2563eb; border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 1.25rem 1.5rem; margin-bottom: 2.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+        <div style="font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>💡</span>
+          <span>核心速览（TL;DR）</span>
+        </div>
+        <p style="font-size: 0.92rem; color: #334155; line-height: 1.65; margin: 0;">
+          {rawFaq?.answer || faqEntry.data.summary}
+        </p>
+      </div>
+
+      <!-- Main Deep Dive Content -->
+      <div class="article-content">
+        <Content />
+      </div>
+
+      <!-- Tailored Airport Recommendations for this specific FAQ -->
+      {rawFaq?.relatedAirports && rawFaq.relatedAirports.length > 0 && (
+        <section style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+          <h3 style="font-size: 1.35rem; font-weight: 700; color: var(--text-heading); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🚀</span>
+            <span>针对本问题的推荐高速机场</span>
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            {rawFaq.relatedAirports.map((airport) => (
+              <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading);">
+                      {airport.name}
+                    </span>
+                    <span style="font-size: 0.72rem; color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; padding: 0.15rem 0.5rem; border-radius: 9999px; font-weight: 600;">
+                      {airport.badge}
+                    </span>
+                  </div>
+                  <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+                    {airport.reason}
+                  </p>
+                </div>
+                <a
+                  href={airport.url}
+                  target="_blank"
+                  rel="noopener nofollow"
+                  class="btn-primary"
+                  style="text-align: center; padding: 0.45rem 1rem; font-size: 0.85rem; font-weight: 600; width: 100%; display: block;"
+                >
+                  直达 {airport.name} 官网通道 ➔
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Related FAQs -->
+      {rawFaq?.relatedFaqs && rawFaq.relatedFaqs.length > 0 && (
+        <section style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+          <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-heading); margin-bottom: 1rem;">
+            🔍 延伸阅读与相关疑问
+          </h3>
+          <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem;">
+            {rawFaq.relatedFaqs.map((faqId) => {
+              const target = FAQS_DATA.find((f) => f.id === faqId);
+              if (!target) return null;
+              return (
+                <li style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem 1rem;">
+                  <a
+                    href={`/faq/${target.id}`}
+                    style="color: var(--text-heading); font-size: 0.92rem; font-weight: 600; text-decoration: none; display: flex; justify-content: space-between; align-items: center;"
+                  >
+                    <span>{target.question}</span>
+                    <span style="color: #2563eb; font-size: 0.82rem; margin-left: 0.5rem; white-space: nowrap;">查看解答 ➔</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      <!-- Bottom Nav Links -->
+      <div style="margin-top: 3rem; text-align: center; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="/faq" class="btn-secondary" style="padding: 0.65rem 1.5rem;">
+          ⬅️ 返回 FAQ 知识库总览
+        </a>
+        <a href="/ranking" class="btn-primary" style="padding: 0.65rem 1.75rem;">
+          🔥 查看全部 35 家 2027 机场排行榜 ➔
+        </a>
+      </div>
+    </article>
+  </div>
+</BaseLayout>
